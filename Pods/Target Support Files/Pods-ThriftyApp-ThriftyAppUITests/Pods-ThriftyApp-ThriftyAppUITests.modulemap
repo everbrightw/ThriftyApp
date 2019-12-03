@@ -1,0 +1,6 @@
+framework module Pods_ThriftyApp_ThriftyAppUITests {
+  umbrella header "Pods-ThriftyApp-ThriftyAppUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}
