@@ -19,18 +19,22 @@ class LoginViewController: UIViewController {
     @IBOutlet var errorLabel: UILabel!
     @IBOutlet var loginButton: UIButton!
     let backgroundImageView = UIImageView()
+    
+    var successLoggedIn: Bool = false
+    var currentUserId: String = ""
+    let semaphore = DispatchSemaphore(value: 0)// i finally realize cs241 is useful
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
-
-        // dissmiss keyboard when tap view or user press a return
-       self.setupToHideKeyboardOnTapOnView()
+    
+        // dissmiss keyboard when tap view anywhere or user press a return
+        self.setupToHideKeyboardOnTapOnView()
         emailTextField.delegate = self as? UITextFieldDelegate
         passwordTextField.delegate = self as? UITextFieldDelegate
         
         
         // test get api call
-        getApiCall(url: "http://0.0.0.0:5000/thrifty/api/v1.0/users")
+        //getApiCall(url: "http://192.168.1.3.:5000/thrifty/api/v1.0/users")
         
         
         //styling ui components
@@ -127,6 +131,149 @@ class LoginViewController: UIViewController {
                 
                 }.resume()
     }
+    typealias CompletionHandler = (_ success:Bool) -> Void
+    func postApiCall(jsonData: Data, url:URL, completionHandler: @escaping CompletionHandler) {
+        
+        var flag = true // true if download succeed,false otherwise
+        
+        if !jsonData.isEmpty {
+            var request = URLRequest(url: url)
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.setValue("application/json", forHTTPHeaderField: "Accept")
+            request.httpMethod = "POST"
+            request.httpBody = jsonData
+            let jsonEncoder = JSONEncoder()
+            print("i am sending data")
+            URLSession.shared.getAllTasks { (openTasks: [URLSessionTask]) in
+                NSLog("open tasks: \(openTasks)")
+            }
+
+            let task = URLSession.shared.dataTask(with: request, completionHandler: { (responseData: Data?, response: URLResponse?, error: Error?) in
+                NSLog("\(String(describing: response))")
+                // getting request
+                let jsonString = String(data: responseData ?? Data(), encoding: .utf8)
+                
+                print("JSON String : " + jsonString!)
+                let dict = self.convertToDictionary(text: jsonString!)
+                print(dict)
+                
+                if((jsonString?.contains("isvalid"))!){
+                    // passed authentication
+                    print("checked is valid")
+                    flag = true
+                    print("when i am setting user id", dict!["UserId"] as! String)
+                    self.currentUserId = dict!["UserId"] as! String
+                    completionHandler(flag)
+                    
+                    
+                }
+                else{
+                    flag = false
+                    completionHandler(flag)
+                }
+                // semaphore signal waiting for this async test to complete
+                self.semaphore.signal()
+                
+            })
+            task.resume()
+            
+        }
+        
+
+    }
+    
+    func showHomeView(){
+        let mainTabController = self.storyboard?.instantiateViewController(withIdentifier: "HomeController") as! HomeViewController
+                
+            // TODO: Fix this
+            // Select Tab
+        mainTabController.selectedViewController = mainTabController.viewControllers?[1]// 0 indexed
+    
+        self.view.window?.rootViewController = mainTabController
+        self.view.window?.makeKeyAndVisible()
+    }
+    
+    func validateFields()-> String? {
+        //checking if all fields are filled
+        if emailTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
+            passwordTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" {
+            
+            return "Some fields are not filled"
+        }
+        
+        
+        return nil
+    }
+    
+    fileprivate func showErrorMessage(_ errorMessage: String?) {
+        //field are not validate
+        errorLabel.text = errorMessage
+        //show error message
+        errorLabel.alpha = 1
+    }
+    
+    // MARK: -user tapped login button
+    @IBAction func loginTapped(_ sender: Any) {
+        
+        let errorMessage = validateFields()
+        
+        if errorMessage != nil{
+            showErrorMessage(errorMessage)
+        }
+        else{
+            // posting for authentication
+            let loginUser: LoginUser = LoginUser(email:emailTextField.text!, password:passwordTextField.text!)
+            let jsonEncoder = JSONEncoder()
+            
+            do {
+                
+                let jsonData = try jsonEncoder.encode(loginUser)
+                let jsonString = String(data: jsonData, encoding: .utf8)
+                print("JSON String : " + jsonString!)
+                print(jsonData.count)
+                postApiCall(jsonData: jsonData, url: URL(string: Constants.zzkIPAddress + "/thrifty/api/v1.0/login/")!, completionHandler: { (success) -> Void in
+                    // When download completes,control flow goes here.
+                    if success {
+                        // download success
+                        print("user logged in")
+                        UserDefaults.standard.set(self.currentUserId, forKey: "isLogin")
+                        print("user id from login page", self.currentUserId)
+                        //self.showHomeView()
+                        self.successLoggedIn = true
+                        
+                    }
+                    else {
+                        // failed authentication
+                        //self.showErrorMessage("Authentication Failed")
+                        self.successLoggedIn = false
+                        print("from login view controller 232: authentication process failed")
+                    }
+                })
+            }
+            catch {
+            }
+            // Thread will wait here until async task closure is complete
+            semaphore.wait(timeout: DispatchTime.distantFuture)
+            print("its time")
+            if(successLoggedIn){
+                self.showHomeView()
+            }
+            else{
+                self.showErrorMessage("Authentication Failed")
+            }
+        }
+    }
+    func convertToDictionary(text: String) -> [String: Any]? {
+        if let data = text.data(using: .utf8) {
+            do {
+                return try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+        return nil
+    }
+//    let dict = convertToDictionary(text: str)
     
     
 
@@ -148,6 +295,14 @@ extension UIViewController{
     @objc func dismissKeyboard()
     {
         view.endEditing(true)
+    }
+}
+
+extension UIButton{
+    func setRoundedButton(){
+        //customize login button
+        self.layer.cornerRadius = 10
+        self.clipsToBounds = true
     }
 }
 

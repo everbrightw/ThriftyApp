@@ -54,5 +54,84 @@ class SignUpViewController: UIViewController {
         signUpButton.layer.cornerRadius = 10
         signUpButton.clipsToBounds = true
     }
+    
+    func postApiCall(jsonData: Data, url:URL) {
+        
+        if !jsonData.isEmpty {
+            var request = URLRequest(url: url)
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.setValue("application/json", forHTTPHeaderField: "Accept")
+            request.httpMethod = "POST"
+            request.httpBody = jsonData
+            let jsonEncoder = JSONEncoder()
+            print("i am sending data")
+            URLSession.shared.getAllTasks { (openTasks: [URLSessionTask]) in
+                NSLog("open tasks: \(openTasks)")
+            }
+
+            let task = URLSession.shared.dataTask(with: request, completionHandler: { (responseData: Data?, response: URLResponse?, error: Error?) in
+                NSLog("\(String(describing: response))")
+                // getting request
+                do {
+                    let jsonString = String(data: responseData ?? Data(), encoding: .utf8)
+                    print("JSON String : " + jsonString!)
+                }
+                catch {
+                }
+                
+            })
+            task.resume()
+        }
+    }
+    
+    func validateFields()-> String? {
+        //checking if all fields are filled
+        if firstNameTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
+            lastNameTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
+            emailTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" || passwordTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
+            addressTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
+            phoneTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == ""{
+            
+            return "Some fields are not filled"
+        }
+        
+        
+        return nil
+    }
+    
+    fileprivate func showErrorMessage(_ errorMessage: String?) {
+        //field are not validate
+        errorLabel.text = errorMessage
+        //show error message
+        errorLabel.alpha = 1
+    }
+    
+    @IBAction func signUpTapped(_ sender: Any) {
+        
+        // validate field
+        let errorMessage = validateFields()
+        
+        if errorMessage != nil{
+            showErrorMessage(errorMessage)
+        }
+        else{
+            let newUser: User = User(firstname: firstNameTextField.text!, lastname: lastNameTextField.text!, email: emailTextField.text!, phone: phoneTextField.text!, password: passwordTextField.text!)
+            
+            let jsonEncoder = JSONEncoder()
+            do {
+                let jsonData = try jsonEncoder.encode(newUser)
+                let jsonString = String(data: jsonData, encoding: .utf8)
+                print("JSON String : " + jsonString!)
+                print(jsonData.count)
+                postApiCall(jsonData: jsonData, url: URL(string: Constants.zzkIPAddress + "/thrifty/api/v1.0/users")!)
+                
+                //dismis sign up page
+                self.dismiss(animated: true, completion: .none)
+            }
+            catch {
+            }
+        }
+    }
+    
 
 }
