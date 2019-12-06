@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		137F91347476C459907E197F /* Pods_ThriftyAppTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5D500EABC1AEEC1B0D1FACB /* Pods_ThriftyAppTests.framework */; };
+		422477B12397DB5C006DA134 /* ExploreTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422477B02397DB5C006DA134 /* ExploreTableViewCell.swift */; };
+		422477B32397DC23006DA134 /* ExplorerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422477B22397DC23006DA134 /* ExplorerViewController.swift */; };
 		4224A93B2395EFB600CDA85A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4224A93A2395EFB600CDA85A /* AppDelegate.swift */; };
 		4224A93D2395EFB600CDA85A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4224A93C2395EFB600CDA85A /* SceneDelegate.swift */; };
 		4224A93F2395EFB600CDA85A /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4224A93E2395EFB600CDA85A /* LoginViewController.swift */; };
@@ -60,6 +62,8 @@
 /* Begin PBXFileReference section */
 		08E80D0325AC543F6F54ABD8 /* Pods_ThriftyApp_ThriftyAppUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ThriftyApp_ThriftyAppUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CD75BCB355FE87B8FADD784 /* Pods-ThriftyApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThriftyApp.release.xcconfig"; path = "Target Support Files/Pods-ThriftyApp/Pods-ThriftyApp.release.xcconfig"; sourceTree = "<group>"; };
+		422477B02397DB5C006DA134 /* ExploreTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreTableViewCell.swift; sourceTree = "<group>"; };
+		422477B22397DC23006DA134 /* ExplorerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplorerViewController.swift; sourceTree = "<group>"; };
 		4224A9372395EFB600CDA85A /* ThriftyApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ThriftyApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4224A93A2395EFB600CDA85A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4224A93C2395EFB600CDA85A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -236,6 +240,7 @@
 				4224A98B23977D0E00CDA85A /* HomeCateViewController.swift */,
 				4224A98D23977D1B00CDA85A /* OtherViewController.swift */,
 				4224A9952397BC5600CDA85A /* DetailViewController.swift */,
+				422477B22397DC23006DA134 /* ExplorerViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -248,6 +253,7 @@
 				4224A98F23977D4900CDA85A /* ElecTableViewCell.swift */,
 				4224A99123977D5400CDA85A /* HomeTableViewCell.swift */,
 				4224A99323977D5E00CDA85A /* OtherTableViewCell.swift */,
+				422477B02397DB5C006DA134 /* ExploreTableViewCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -506,9 +512,11 @@
 				4224A93F2395EFB600CDA85A /* LoginViewController.swift in Sources */,
 				4224A97D2396F99200CDA85A /* LocationTableViewController.swift in Sources */,
 				4224A9822397456C00CDA85A /* Item.swift in Sources */,
+				422477B12397DB5C006DA134 /* ExploreTableViewCell.swift in Sources */,
 				4224A93B2395EFB600CDA85A /* AppDelegate.swift in Sources */,
 				4224A980239743C500CDA85A /* ItemCell.swift in Sources */,
 				4224A93D2395EFB600CDA85A /* SceneDelegate.swift in Sources */,
+				422477B32397DC23006DA134 /* ExplorerViewController.swift in Sources */,
 				4224A98A23977CD000CDA85A /* ElecViewController.swift in Sources */,
 				4224A9842397500F00CDA85A /* Constants.swift in Sources */,
 				4224A988239768E800CDA85A /* ClotheItemCell.swift in Sources */,

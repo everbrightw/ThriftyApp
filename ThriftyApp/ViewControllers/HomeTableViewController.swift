@@ -97,7 +97,6 @@ class HomeTableViewController: UIViewController,UISearchBarDelegate, UISearchDis
     func searchApiCall(searchText: String){
         var searchResultItems: [DisplayItem] = []
         let jsonUrlString = Constants.zzkIPAddress + "/thrifty/api/v1.0/entity/search/" + searchText
-        print(jsonUrlString)
            guard let url = URL(string: jsonUrlString) else { return }
            
            URLSession.shared.dataTask(with: url) { (data, response, err) in

@@ -8,7 +8,7 @@
 
 import UIKit
 
-
+var currentUserId: String = ""
 // MARK: -controlling user page
 class LoginViewController: UIViewController {
     
@@ -21,7 +21,7 @@ class LoginViewController: UIViewController {
     let backgroundImageView = UIImageView()
     
     var successLoggedIn: Bool = false
-    var currentUserId: String = ""
+    
     let semaphore = DispatchSemaphore(value: 0)// i finally realize cs241 is useful
 
     override func viewDidLoad() {
@@ -132,6 +132,7 @@ class LoginViewController: UIViewController {
                 }.resume()
     }
     typealias CompletionHandler = (_ success:Bool) -> Void
+    
     func postApiCall(jsonData: Data, url:URL, completionHandler: @escaping CompletionHandler) {
         
         var flag = true // true if download succeed,false otherwise
@@ -162,7 +163,7 @@ class LoginViewController: UIViewController {
                     print("checked is valid")
                     flag = true
                     print("when i am setting user id", dict!["UserId"] as! String)
-                    self.currentUserId = dict!["UserId"] as! String
+                    currentUserId = dict!["UserId"] as! String
                     completionHandler(flag)
                     
                     
@@ -236,8 +237,8 @@ class LoginViewController: UIViewController {
                     if success {
                         // download success
                         print("user logged in")
-                        UserDefaults.standard.set(self.currentUserId, forKey: "isLogin")
-                        print("user id from login page", self.currentUserId)
+                        UserDefaults.standard.set(currentUserId, forKey: "isLogin")
+                        print("user id from login page", currentUserId)
                         //self.showHomeView()
                         self.successLoggedIn = true
                         

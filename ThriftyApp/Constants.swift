@@ -10,6 +10,6 @@ import Foundation
 
 struct Constants {
     
-    static let zzkIPAddress = "http://192.168.1.6:8888"
+    static let zzkIPAddress = "http://192.168.1.3:5000"
 
 }
